@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Nueva Cita — DentalCare</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css"/>
+    <style>
+        :root{--dp:#0077b6}
+        body{background:#f8fafc;font-family:'Segoe UI',sans-serif}
+        .sidebar{min-height:100vh;background:linear-gradient(180deg,var(--dp) 0%,#023e8a 100%);width:240px;position:fixed;left:0;top:0;z-index:100;padding-top:1rem}
+        .sidebar .nav-link{color:rgba(255,255,255,.8);padding:.6rem 1.2rem;border-radius:8px;margin:2px 8px}
+        .sidebar .nav-link:hover{background:rgba(255,255,255,.15);color:#fff}
+        .sidebar-brand{color:#fff;font-size:1.2rem;font-weight:700;padding:1rem 1.2rem 1.5rem;display:block;text-decoration:none}
+        .sidebar-brand span{color:#90e0ef}
+        .topbar{background:#fff;border-bottom:1px solid #e2e8f0;padding:.75rem 2rem;margin-left:240px;position:sticky;top:0;z-index:99}
+        .main-content{margin-left:240px;padding:2rem}
+        .form-card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;padding:2rem;max-width:600px}
+        .form-control,.form-select{border-radius:10px;border:1.5px solid #e2e8f0;}
+        .form-control:focus,.form-select:focus{border-color:#00b4d8;box-shadow:0 0 0 .2rem rgba(0,180,216,.2);}
+    </style>
+</head>
+<body>
+<nav class="sidebar d-flex flex-column">
+    <a class="sidebar-brand" href="/"><i class="bi bi-tooth me-1"></i>Dental<span>Care</span></a>
+    <ul class="nav flex-column flex-grow-1 px-1">
+        <li><a href="/recepcionista/dashboard" class="nav-link"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+        <li><a href="/recepcionista/citas/solicitadas" class="nav-link"><i class="bi bi-calendar-check me-2"></i>Solicitudes</a></li>
+        <li><a href="/recepcionista/citas" class="nav-link"><i class="bi bi-calendar3 me-2"></i>Todas las Citas</a></li>
+        <li><a href="/recepcionista/citas/nueva" class="nav-link active"><i class="bi bi-plus-circle me-2"></i>Nueva Cita</a></li>
+        <li><a href="/recepcionista/pacientes" class="nav-link"><i class="bi bi-person-lines-fill me-2"></i>Pacientes</a></li>
+    </ul>
+    <div class="p-3 mt-auto">
+        <form th:action="@{/logout}" method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <button class="btn btn-outline-light w-100 btn-sm"><i class="bi bi-box-arrow-left me-1"></i>Cerrar sesión</button>
+        </form>
+    </div>
+</nav>
+<div class="topbar"><h5 class="mb-0 fw-bold" style="color:#1e3a5f;">Programar Nueva Cita</h5></div>
+<div class="main-content">
+    <div class="form-card">
+        <form th:action="@{/recepcionista/citas/nueva}" method="post" th:object="${cita}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Paciente</label>
+                <select class="form-select" name="paciente.id" required>
+                    <option value="">-- Seleccionar paciente --</option>
+                    <option th:each="p : ${pacientes}" th:value="${p.id}"
+                            th:text="${p.usuario.nombreCompleto + ' (' + p.dni + ')'}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Odontólogo</label>
+                <select class="form-select" name="odontologo.id" required>
+                    <option value="">-- Seleccionar odontólogo --</option>
+                    <option th:each="o : ${odontologos}" th:value="${o.id}"
+                            th:text="${o.usuario.nombreCompleto + ' — ' + o.especialidad}"></option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Fecha y Hora</label>
+                <input type="datetime-local" class="form-control" name="fechaHora" required/>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Motivo de la Cita</label>
+                <textarea class="form-control" name="motivo" rows="3" placeholder="Describe el motivo..." required></textarea>
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn px-4" style="background:#0077b6;color:#fff;border-radius:10px;">
+                    <i class="bi bi-calendar-plus me-1"></i>Programar Cita
+                </button>
+                <a href="/recepcionista/citas" class="btn btn-outline-secondary" style="border-radius:10px;">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
